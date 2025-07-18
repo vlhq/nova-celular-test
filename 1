@@ -1,0 +1,923 @@
+local TweenService = game:GetService("TweenService")
+local UIS = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local Lighting = game:GetService("Lighting")
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+
+local key = "1"
+local discordLink = "https://discord.gg/EXK4dQxJBv"
+
+-- Loading Screen GUI
+local LoadingGui = Instance.new("ScreenGui")
+LoadingGui.Name = "NovaStealerLoadingGui"
+LoadingGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+LoadingGui.IgnoreGuiInset = true
+LoadingGui.DisplayOrder = 1000 -- Ensure it's on top
+LoadingGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+local LoadingFrame = Instance.new("Frame")
+LoadingFrame.Parent = LoadingGui
+LoadingFrame.Size = UDim2.new(1, 0, 1, 0)
+LoadingFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15) -- Dark background
+LoadingFrame.BackgroundTransparency = 0
+LoadingFrame.ZIndex = 1
+
+local LoadingText = Instance.new("TextLabel")
+LoadingText.Parent = LoadingFrame
+LoadingText.Size = UDim2.new(0, 300, 0, 50)
+LoadingText.Position = UDim2.new(0.5, -150, 0.5, -80)
+LoadingText.BackgroundTransparency = 1
+LoadingText.Font = Enum.Font.GothamBold
+LoadingText.TextColor3 = Color3.fromRGB(255, 255, 255)
+LoadingText.TextSize = 24
+LoadingText.Text = "Loading Nova Stealer..."
+LoadingText.ZIndex = 2
+
+[cite_start]local LoadingBarBG = Instance.new("Frame") [cite: 86]
+[cite_start]LoadingBarBG.Parent = LoadingFrame [cite: 86]
+[cite_start]LoadingBarBG.Size = UDim2.new(0, 400, 0, 20) [cite: 86]
+[cite_start]LoadingBarBG.Position = UDim2.new(0.5, -200, 0.5, 0) [cite: 86]
+[cite_start]LoadingBarBG.BackgroundColor3 = Color3.fromRGB(20, 20, 20) -- Más oscuro para barra [cite: 86]
+[cite_start]LoadingBarBG.BorderSizePixel = 0 [cite: 86]
+[cite_start]LoadingBarBG.ZIndex = 2 [cite: 86]
+
+[cite_start]local LoadingBarCorner = Instance.new("UICorner") [cite: 86]
+[cite_start]LoadingBarCorner.CornerRadius = UDim.new(0, 8) [cite: 86]
+[cite_start]LoadingBarCorner.Parent = LoadingBarBG [cite: 86]
+
+[cite_start]local LoadingBar = Instance.new("Frame") [cite: 86]
+[cite_start]LoadingBar.Parent = LoadingBarBG [cite: 86]
+[cite_start]LoadingBar.Size = UDim2.new(0, 0, 1, 0) -- Starts at 0 width [cite: 86]
+[cite_start]LoadingBar.BackgroundColor3 = Color3.fromRGB(255, 50, 50) -- Red loading bar [cite: 86]
+[cite_start]LoadingBar.BorderSizePixel = 0 [cite: 86]
+[cite_start]LoadingBar.ZIndex = 3 [cite: 86]
+
+[cite_start]local LoadingBarStroke = Instance.new("UIStroke") [cite: 86]
+[cite_start]LoadingBarStroke.Thickness = 1 [cite: 86]
+[cite_start]LoadingBarStroke.Color = Color3.fromRGB(255, 0, 0) [cite: 86]
+[cite_start]LoadingBarStroke.Transparency = 0.5 [cite: 86]
+[cite_start]LoadingBarStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border [cite: 86]
+[cite_start]LoadingBarStroke.Parent = LoadingBarBG [cite: 86]
+
+[cite_start]local LoadingPercentage = Instance.new("TextLabel") [cite: 86]
+[cite_start]LoadingPercentage.Parent = LoadingBarBG [cite: 86]
+[cite_start]LoadingPercentage.Size = UDim2.new(1, 0, 1, 0) [cite: 86]
+[cite_start]LoadingPercentage.BackgroundTransparency = 1 [cite: 86]
+[cite_start]LoadingPercentage.Font = Enum.Font.GothamMedium [cite: 86]
+[cite_start]LoadingPercentage.TextColor3 = Color3.fromRGB(255, 255, 255) [cite: 86]
+[cite_start]LoadingPercentage.TextSize = 16 [cite: 86]
+[cite_start]LoadingPercentage.Text = "0%" [cite: 86]
+[cite_start]LoadingPercentage.ZIndex = 4 [cite: 86]
+
+-- Simulate Loading Progress
+[cite_start]local function simulateLoading() [cite: 87]
+    [cite_start]for i = 1, 100, 5 do [cite: 87]
+        [cite_start]local progress = i / 100 [cite: 87]
+        [cite_start]TweenService:Create(LoadingBar, TweenInfo.new(0.1, Enum.EasingStyle.Linear), {Size = UDim2.new(progress, 0, 1, 0)}):Play() [cite: 87]
+        [cite_start]LoadingPercentage.Text = tostring(i) .. "%" [cite: 87]
+        [cite_start]task.wait(0.05) [cite: 87]
+    end
+    [cite_start]TweenService:Create(LoadingBar, TweenInfo.new(0.2, Enum.EasingStyle.Linear), {Size = UDim2.new(1, 0, 1, 0)}):Play() [cite: 87]
+    [cite_start]LoadingPercentage.Text = "100%" [cite: 87]
+    [cite_start]task.wait(0.3) [cite: 87]
+    [cite_start]TweenService:Create(LoadingFrame, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 1}):Play() [cite: 87]
+    [cite_start]TweenService:Create(LoadingText, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {TextTransparency = 1}):Play() [cite: 88]
+    [cite_start]TweenService:Create(LoadingBarBG, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 1}):Play() [cite: 88]
+    [cite_start]TweenService:Create(LoadingBar, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {BackgroundTransparency = 1}):Play() [cite: 88]
+    [cite_start]TweenService:Create(LoadingBarStroke, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Transparency = 1}):Play() [cite: 88]
+    [cite_start]TweenService:Create(LoadingPercentage, TweenInfo.new(0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {TextTransparency = 1}):Play() [cite: 88]
+    [cite_start]task.wait(0.5) [cite: 88]
+    [cite_start]LoadingGui:Destroy() [cite: 88]
+end
+
+-- Execute loading screen before the main script
+simulateLoading()
+
+-- Directly insert the main script content here
+-- This avoids using loadstring which is often restricted or problematic
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+local RunService = game:GetService("RunService")
+local random = Random.new()
+
+local DEBUG = false
+local tpAmt
+local void = CFrame.new(0, -3.4028234663852886e+38, 0)
+local teleporting
+
+[cite_start]local function DebugInfo(mode, content, value) [cite: 89]
+    [cite_start]if not DEBUG then return end [cite: 89]
+    [cite_start]if mode == "warn" then [cite: 89]
+        [cite_start]warn("[NovaStealerTP DEBUG]:", content, value or "") [cite: 89]
+    [cite_start]elseif mode == "print" then [cite: 89]
+        [cite_start]print("[NovaStealerTP DEBUG]:", content, value or "") [cite: 89]
+    [cite_start]else [cite: 89]
+        [cite_start]warn("[NovaStealerTP DEBUG]: Invalid debug type.") [cite: 89, 90]
+    end
+end
+
+[cite_start]local backpack = Player:WaitForChild("Backpack") [cite: 90]
+[cite_start]local char, humanoid, hrp [cite: 90]
+
+[cite_start]local function GetCharacter() [cite: 90]
+    [cite_start]return Player.Character or Player.CharacterAdded:Wait() [cite: 90]
+end
+
+[cite_start]local function SetupCharacter() [cite: 90]
+    [cite_start]char = GetCharacter() [cite: 90]
+    [cite_start]humanoid = char:WaitForChild("Humanoid") [cite: 90]
+    [cite_start]hrp = char:WaitForChild("HumanoidRootPart") [cite: 90]
+    [cite_start]backpack = Player:WaitForChild("Backpack") [cite: 90]
+    [cite_start]DebugInfo("print", "Character setup completed for", Player.Name) [cite: 90]
+end
+
+[cite_start]SetupCharacter() [cite: 90]
+
+[cite_start]Player.CharacterAdded:Connect(function() [cite: 90]
+    [cite_start]SetupCharacter() [cite: 90]
+end)
+
+[cite_start]task.spawn(function() [cite: 90]
+    [cite_start]while true do [cite: 91]
+        [cite_start]local ping = Player:GetNetworkPing() * 1000 [cite: 91]
+        [cite_start]tpAmt = math.clamp(math.floor(ping * 0.8), 10, 150) [cite: 91]
+        [cite_start]if DEBUG then [cite: 91]
+            [cite_start]DebugInfo("print", "Ping: " .. math.floor(ping) .. "ms | tpAmt:", tpAmt) [cite: 91, 92]
+        end
+        [cite_start]RunService.Heartbeat:Wait() [cite: 92]
+    end
+end)
+
+[cite_start]local function TP(position) [cite: 92]
+    [cite_start]if not teleporting then [cite: 92]
+        [cite_start]teleporting = true [cite: 92]
+        [cite_start]if typeof(position) == "CFrame" and hrp and hrp.Parent then [cite: 92]
+            [cite_start]hrp.CFrame = position + Vector3.new( [cite: 92]
+                [cite_start]random:NextNumber(-0.00005, 0.00005), [cite: 93]
+                [cite_start]random:NextNumber(-0.00005, 0.00005), [cite: 93]
+                [cite_start]random:NextNumber(-0.00005, 0.00005) [cite: 93]
+            )
+            [cite_start]RunService.Heartbeat:Wait() [cite: 93]
+        end
+        [cite_start]teleporting = false [cite: 93]
+    [cite_start]else [cite: 93]
+        [cite_start]DebugInfo("warn", "You are already teleporting", "teleporting") [cite: 93]
+    end
+end
+
+[cite_start]local function FindDelivery() [cite: 93]
+    [cite_start]local plots = workspace:FindFirstChild("Plots") [cite: 93, 94]
+    [cite_start]if not plots then [cite: 94]
+        [cite_start]DebugInfo("warn", "Plots folder not found in workspace", nil) [cite: 94]
+        [cite_start]return [cite: 94]
+    end
+    [cite_start]for _, plot in pairs(plots:GetChildren()) do [cite: 94]
+        [cite_start]local sign = plot:FindFirstChild("PlotSign") [cite: 94]
+        [cite_start]if sign then [cite: 94]
+            [cite_start]local yourBase = sign:FindFirstChild("YourBase") [cite: 94]
+            [cite_start]if yourBase and yourBase.Enabled then [cite: 94]
+                [cite_start]local hitbox = plot:FindFirstChild("DeliveryHitbox") [cite: 95]
+                [cite_start]if hitbox and hitbox:IsA("BasePart") and hitbox.Size.Magnitude > 0 then [cite: 95]
+                    [cite_start]return hitbox [cite: 95]
+                end
+            end
+        end
+    end
+    [cite_start]DebugInfo("warn", "No valid DeliveryHitbox found", nil) [cite: 96]
+end
+
+[cite_start]local function DeliverBrainrot(statusLabel) [cite: 96]
+    -- Verificar si el personaje existe
+    [cite_start]if not char or not hrp then [cite: 96]
+        [cite_start]statusLabel.Text = "Error: Character not loaded" [cite: 96]
+        [cite_start]statusLabel.TextColor3 = Color3.fromRGB(255, 80, 80) [cite: 96]
+        [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 0}):Play() [cite: 96]
+        [cite_start]task.wait(2) [cite: 96]
+        [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 1}):Play() [cite: 97]
+        return
+    end
+
+    [cite_start]local function attemptDelivery() [cite: 97]
+        [cite_start]local hitbox = FindDelivery() [cite: 97]
+        [cite_start]if not hitbox then [cite: 97]
+            [cite_start]statusLabel.Text = "Error: DeliveryHitbox not found" [cite: 97]
+            [cite_start]statusLabel.TextColor3 = Color3.fromRGB(255, 80, 80) [cite: 97]
+            [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 0}):Play() [cite: 97]
+            [cite_start]task.wait(2) [cite: 98]
+            [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 1}):Play() [cite: 98]
+            return false
+        end
+
+        [cite_start]DebugInfo("print", "DeliveryHitbox successfully found", hitbox) [cite: 98]
+
+        -- Mejorar la posición objetivo con offset aleatorio (más preciso)
+        [cite_start]local randomOffset = Vector3.new( [cite: 98]
+            [cite_start]random:NextNumber(-0.3, 0.3), [cite: 99]
+            [cite_start]random:NextNumber(-0.7, -0.3), [cite: 99]
+            [cite_start]random:NextNumber(-0.3, 0.3) [cite: 99]
+        )
+        [cite_start]local target = hitbox.CFrame * CFrame.new(randomOffset) [cite: 99]
+        
+        -- Fase 1: Teleport inicial más agresivo
+        [cite_start]statusLabel.Text = "Phase 1: Initial teleport..." [cite: 99]
+        [cite_start]statusLabel.TextColor3 = Color3.fromRGB(255, 165, 0) [cite: 99]
+        [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 0}):Play() [cite: 99]
+        
+        [cite_start]local iterations = math.max(tpAmt or 70, 100) -- Mínimo 100 iteraciones [cite: 100]
+        [cite_start]for i = 1, iterations do [cite: 100]
+            [cite_start]TP(target) [cite: 100]
+            [cite_start]if i % 20 == 0 then -- Actualizar progreso cada 20 iteraciones [cite: 100]
+                [cite_start]statusLabel.Text = "Phase 1: " .. math.floor((i/iterations) * 100) .. "%" [cite: 100]
+                [cite_start]task.wait(0.01) [cite: 101]
+            end
+        end
+        
+        -- Fase 2: Void teleport para evitar detección
+        [cite_start]statusLabel.Text = "Phase 2: Void teleport..." [cite: 101]
+        [cite_start]statusLabel.TextColor3 = Color3.fromRGB(255, 255, 0) [cite: 101]
+        [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 0}):Play() [cite: 101]
+        
+        [cite_start]for i = 1, 3 do [cite: 102]
+            [cite_start]TP(void) [cite: 102]
+            [cite_start]task.wait(random:NextNumber(0.05, 0.1)) [cite: 102]
+        end
+        
+        -- Fase 3: Teleport final de precisión (más iteraciones y más estricto)
+        [cite_start]statusLabel.Text = "Phase 3: Precision teleport..." [cite: 102]
+        [cite_start]statusLabel.TextColor3 = Color3.fromRGB(0, 255, 255) [cite: 103]
+        [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 0}):Play() [cite: 103]
+        
+        [cite_start]local precisionIterations = math.max(tpAmt / 4, 30) -- Más iteraciones para precisión [cite: 103]
+        [cite_start]for i = 1, precisionIterations do [cite: 103]
+            [cite_start]TP(target) [cite: 103]
+            [cite_start]if i % 5 == 0 then [cite: 103]
+                [cite_start]statusLabel.Text = "Phase 3: " .. math.floor((i/precisionIterations) * 100) .. "%" [cite: 104]
+                [cite_start]task.wait(0.01) [cite: 104]
+            end
+        end
+        
+        -- Verificación final con múltiples intentos (más estricto y TP extra si está cerca)
+        [cite_start]task.wait(0.3) [cite: 104]
+        [cite_start]local maxAttempts = 3 [cite: 105]
+        [cite_start]local success = false [cite: 105]
+        [cite_start]for attempt = 1, maxAttempts do [cite: 105]
+            [cite_start]local distance = (hrp.Position - target.Position).Magnitude [cite: 105]
+            [cite_start]if distance <= 12 then -- Mucho más estricto [cite: 105]
+                [cite_start]success = true [cite: 105]
+                [cite_start]break [cite: 105]
+            [cite_start]elseif distance <= 20 then [cite: 106]
+                -- Si está cerca pero no dentro del rango, TP exacto al centro
+                [cite_start]TP(hitbox.CFrame) [cite: 106]
+                [cite_start]task.wait(0.05) [cite: 106]
+            end
+            [cite_start]if attempt < maxAttempts then [cite: 107]
+                [cite_start]statusLabel.Text = "Retry attempt " .. attempt .. "..." [cite: 107]
+                [cite_start]statusLabel.TextColor3 = Color3.fromRGB(255, 165, 0) [cite: 107]
+                [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 0}):Play() [cite: 107]
+                [cite_start]for i = 1, 20 do [cite: 107]
+                    [cite_start]TP(target) [cite: 108]
+                end
+                [cite_start]task.wait(0.1) [cite: 108]
+            end
+        end
+        return success, target
+    end
+
+    -- Función para verificar si el brainrot fue entregado
+    [cite_start]local function checkDeliverySuccess() [cite: 108]
+        -- Esperar un poco para que el juego procese la entrega
+        [cite_start]task.wait(0.5) [cite: 109]
+        
+        -- Verificar si hay algún indicador de entrega exitosa
+        [cite_start]local deliverySuccess = false [cite: 109]
+        
+        -- Opción 1: Verificar si el hitbox sigue activo (si no, significa que se entregó)
+        [cite_start]local hitbox = FindDelivery() [cite: 109]
+        [cite_start]if not hitbox then [cite: 109]
+            [cite_start]deliverySuccess = true [cite: 110]
+            [cite_start]DebugInfo("print", "Delivery success detected: Hitbox disappeared", "") [cite: 110]
+            return deliverySuccess
+        end
+        
+        -- Opción 2: Verificar la distancia al hitbox (más permisivo)
+        [cite_start]if hitbox then [cite: 110]
+            [cite_start]local distance = (hrp.Position - hitbox.Position).Magnitude [cite: 111]
+            [cite_start]if distance > 20 then -- Más estricto [cite: 111]
+                [cite_start]deliverySuccess = true [cite: 111]
+                [cite_start]DebugInfo("print", "Delivery success detected: Player far from hitbox", distance) [cite: 111]
+                return deliverySuccess
+            end
+        end
+        
+        -- Opción 3: Verificar si el jugador está en una posición válida para entrega
+        [cite_start]if hitbox then [cite: 112]
+            [cite_start]local distance = (hrp.Position - hitbox.Position).Magnitude [cite: 112]
+            -- Si está muy cerca del hitbox (menos de 10 studs), probablemente ya se entregó
+            [cite_start]if distance <= 7 then -- Más estricto [cite: 112]
+                -- Esperar un poco más y verificar si el hitbox sigue ahí
+                [cite_start]task.wait(0.5) [cite: 113]
+                [cite_start]local newHitbox = FindDelivery() [cite: 113]
+                [cite_start]if not newHitbox or (hrp.Position - newHitbox.Position).Magnitude > 10 then [cite: 113]
+                    [cite_start]deliverySuccess = true [cite: 114]
+                    [cite_start]DebugInfo("print", "Delivery success detected: Hitbox disappeared after close proximity", "") [cite: 114]
+                    return deliverySuccess
+                end
+            end
+        end
+        
+        -- Opción 4: Verificar si hay algún cambio en el inventario o stats del jugador
+        -- (Esto dependería de cómo el juego maneja las entregas)
+        
+        [cite_start]DebugInfo("print", "Delivery check result", deliverySuccess) [cite: 115]
+        return deliverySuccess
+    end
+
+    -- Sistema de reintentos automáticos (sin espera en el primer intento)
+    [cite_start]local maxDeliveryAttempts = 3 [cite: 115]
+    [cite_start]local currentAttempt = 1 [cite: 116]
+    [cite_start]local deliverySuccessful = false [cite: 116]
+    [cite_start]while currentAttempt <= maxDeliveryAttempts and not deliverySuccessful do [cite: 116]
+        [cite_start]statusLabel.Text = "🔄 Delivery Attempt " .. currentAttempt .. "/" .. maxDeliveryAttempts [cite: 116]
+        [cite_start]statusLabel.TextColor3 = Color3.fromRGB(255, 165, 0) [cite: 116]
+        [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 0}):Play() [cite: 116]
+        [cite_start]if currentAttempt > 1 then [cite: 116]
+            [cite_start]task.wait(1) [cite: 116]
+        end
+        [cite_start]local teleportSuccess, target = attemptDelivery() [cite: 117]
+        
+        [cite_start]if teleportSuccess then [cite: 117]
+            [cite_start]statusLabel.Text = "✅ Teleport successful! Checking delivery..." [cite: 117, 118]
+            [cite_start]statusLabel.TextColor3 = Color3.fromRGB(0, 255, 100) [cite: 118]
+            [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 0}):Play() [cite: 118]
+            
+            -- Verificar si la entrega fue exitosa
+            [cite_start]deliverySuccessful = checkDeliverySuccess() [cite: 118]
+            
+            [cite_start]if deliverySuccessful then [cite: 119]
+                [cite_start]statusLabel.Text = "🎉 Brainrot delivered successfully!" [cite: 119]
+                [cite_start]statusLabel.TextColor3 = Color3.fromRGB(0, 255, 100) [cite: 119]
+                [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 0}):Play() [cite: 119]
+                [cite_start]task.wait(3) [cite: 119]
+                [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 1}):Play() [cite: 120]
+                return
+            else
+                -- Verificación adicional: si el teleport fue exitoso y estamos muy cerca, probablemente se entregó
+                [cite_start]local finalDistance = (hrp.Position - target.Position).Magnitude [cite: 120]
+                [cite_start]if finalDistance <= 15 then [cite: 120]
+                    [cite_start]statusLabel.Text = "🎉 Brainrot likely delivered! (Close proximity)" [cite: 121, 122]
+                    [cite_start]statusLabel.TextColor3 = Color3.fromRGB(0, 255, 100) [cite: 122]
+                    [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 0}):Play() [cite: 122]
+                    [cite_start]task.wait(3) [cite: 122]
+                    [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 1}):Play() [cite: 123]
+                    return
+                else
+                    [cite_start]statusLabel.Text = "⚠️ Teleport successful but delivery failed. Retrying..." [cite: 123, 124]
+                    [cite_start]statusLabel.TextColor3 = Color3.fromRGB(255, 165, 0) [cite: 124]
+                    [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 0}):Play() [cite: 124]
+                    [cite_start]task.wait(2) [cite: 124]
+                end
+            end
+        [cite_start]else [cite: 125]
+            [cite_start]statusLabel.Text = "❌ Teleport failed. Retrying..." [cite: 125, 126]
+            [cite_start]statusLabel.TextColor3 = Color3.fromRGB(255, 80, 80) [cite: 126]
+            [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 0}):Play() [cite: 126]
+            [cite_start]task.wait(2) [cite: 126]
+        end
+        
+        [cite_start]currentAttempt += 1 [cite: 126]
+        
+        -- Pequeña pausa entre intentos
+        [cite_start]if currentAttempt <= maxDeliveryAttempts then [cite: 127]
+            [cite_start]task.wait(1) [cite: 127]
+        end
+    end
+    
+    -- Si llegamos aquí, todos los intentos fallaron
+    [cite_start]if not deliverySuccessful then [cite: 127]
+        [cite_start]statusLabel.Text = "💀 All delivery attempts failed after " .. maxDeliveryAttempts .. " tries" [cite: 127]
+        [cite_start]statusLabel.TextColor3 = Color3.fromRGB(255, 80, 80) [cite: 127]
+        [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 0}):Play() [cite: 127]
+        [cite_start]task.wait(3) [cite: 128]
+        [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 1}):Play() [cite: 128]
+    end
+end
+
+[cite_start]local function TPNearestBase(statusLabel) [cite: 128]
+    [cite_start]local plotsFolder = workspace:FindFirstChild("Plots") [cite: 128]
+    [cite_start]if not plotsFolder then [cite: 128]
+        [cite_start]DebugInfo("warn", "Missing folder", "Plots") [cite: 128]
+        [cite_start]statusLabel.Text = "Error: Plots folder not found" [cite: 128]
+        [cite_start]statusLabel.TextColor3 = Color3.fromRGB(255, 80, 80) [cite: 128]
+        [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 0}):Play() [cite: 128]
+        [cite_start]task.wait(2) [cite: 128]
+        [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 1}):Play() [cite: 129]
+        return
+    end
+
+    [cite_start]local closestBrainrot = nil [cite: 129]
+    [cite_start]local shortestDistance = math.huge [cite: 129]
+
+    [cite_start]for _, plot in pairs(plotsFolder:GetChildren()) do [cite: 129]
+        [cite_start]local plotSign = plot:FindFirstChild("PlotSign") [cite: 129]
+        [cite_start]if plotSign then [cite: 129]
+            [cite_start]local plotSignText = plotSign:FindFirstChild("SurfaceGui"):FindFirstChild("Frame"):FindFirstChild("TextLabel") [cite: 129]
+            [cite_start]if plotSignText and plotSignText.ContentText ~= "Empty Base" then [cite: 129]
+                [cite_start]local yourBase = plotSign:FindFirstChild("YourBase") [cite: 130]
+                [cite_start]if yourBase and not yourBase.Enabled then [cite: 130]
+                    [cite_start]local podiums = plot:FindFirstChild("AnimalPodiums") [cite: 130]
+                    [cite_start]if podiums then [cite: 130]
+                        [cite_start]for _, brainrot in pairs(podiums:GetChildren()) do [cite: 131]
+                            [cite_start]if brainrot:IsA("Model") and brainrot:FindFirstChild("Base"):FindFirstChild("Spawn") then [cite: 131]
+                                [cite_start]local brainrotSpawn = brainrot.Base.Spawn [cite: 131]
+                                [cite_start]local distance = (brainrotSpawn.Position - hrp.Position).Magnitude [cite: 132]
+                                [cite_start]if distance < shortestDistance then [cite: 132]
+                                    [cite_start]shortestDistance = distance [cite: 132]
+                                    [cite_start]closestBrainrot = brainrotSpawn [cite: 133]
+                                end
+                            end
+                        [cite_start]end [cite: 134]
+                    end
+                end
+            end
+        end
+    end
+
+    [cite_start]if not closestBrainrot then [cite: 134]
+        [cite_start]DebugInfo("warn", "No valid podium found", nil) [cite: 134]
+        [cite_start]statusLabel.Text = "Error: No valid podium found" [cite: 135]
+        [cite_start]statusLabel.TextColor3 = Color3.fromRGB(255, 80, 80) [cite: 135]
+        [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 0}):Play() [cite: 135]
+        [cite_start]task.wait(2) [cite: 135]
+        [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 1}):Play() [cite: 135]
+        return
+    end
+
+    [cite_start]DebugInfo("print", "Nearest podium found", closestBrainrot) [cite: 135]
+
+    [cite_start]local target = closestBrainrot.CFrame * CFrame.new(0, 1.5, 0) -- Menor altura [cite: 135]
+    
+    [cite_start]local i = 0 [cite: 136]
+    [cite_start]while i < (tpAmt or 70) do [cite: 136]
+        [cite_start]TP(target) [cite: 136]
+        [cite_start]i += 1 [cite: 136]
+    end
+    
+    [cite_start]for _ = 1, 2 do [cite: 136]
+        [cite_start]TP(void) [cite: 136]
+    end
+    
+    [cite_start]i = 0 [cite: 137]
+    [cite_start]while i < (tpAmt / 16) do [cite: 137]
+        [cite_start]TP(target) [cite: 137]
+        [cite_start]i += 1 [cite: 137]
+    end
+    
+    [cite_start]task.wait(1) [cite: 137]
+
+    [cite_start]local distance = (hrp.Position - target.Position).Magnitude [cite: 137]
+    [cite_start]if distance <= 15 then -- Más estricto [cite: 137]
+        [cite_start]DebugInfo("print", "Teleport succeeded", distance) [cite: 137]
+        [cite_start]statusLabel.Text = "Teleport Succeeded!" [cite: 137]
+        [cite_start]statusLabel.TextColor3 = Color3.fromRGB(0, 255, 100) [cite: 137]
+    else
+        [cite_start]DebugInfo("warn", "Teleport failed", distance) [cite: 137]
+        [cite_start]statusLabel.Text = "Teleport Failed: Too far (" .. math.floor(distance) .. ")" [cite: 137]
+        [cite_start]statusLabel.TextColor3 = Color3.fromRGB(255, 80, 80) [cite: 137]
+    end
+    [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 0}):Play() [cite: 138]
+    [cite_start]task.wait(2) [cite: 138]
+    [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 1}):Play() [cite: 138]
+end
+
+[cite_start]local function TweenSteal(statusLabel) [cite: 138]
+    [cite_start]local TELEPORT_ITERATIONS = 85 [cite: 138]
+    [cite_start]local VOID_CFRAME = CFrame.new(0, -3e40, 0) [cite: 138]
+    [cite_start]local MIN_RANDOM_OFFSET = -0.0008 [cite: 138]
+    [cite_start]local MAX_RANDOM_OFFSET = 0.0008 [cite: 138]
+    [cite_start]local JITTER_RANGE = 0.0002 [cite: 138]
+
+    [cite_start]local function executeStealthMovement(targetCF, steps) [cite: 138]
+        [cite_start]if not hrp or typeof(targetCF) ~= "CFrame" then [cite: 138]
+            [cite_start]DebugInfo("warn", "Invalid HRP or target CFrame", nil) [cite: 139]
+            return false
+        end
+        
+        [cite_start]local currentPos = hrp.Position [cite: 139]
+        [cite_start]local targetPos = targetCF.Position [cite: 139]
+        [cite_start]local startTime = tick() [cite: 139]
+
+        [cite_start]for i = 1, steps do [cite: 139]
+            [cite_start]local progress = (tick() - startTime) / (steps * 0.02) [cite: 139]
+            [cite_start]progress = math.min(progress, 1) [cite: 140]
+            
+            [cite_start]local curvedProgress = progress * progress * (3 - 2 * progress) [cite: 140]
+            
+            [cite_start]local newPos = currentPos:Lerp(targetPos, curvedProgress) [cite: 140]
+            [cite_start]newPos += Vector3.new( [cite: 140]
+                [cite_start]random:NextNumber(-JITTER_RANGE, JITTER_RANGE), [cite: 141]
+                [cite_start]random:NextNumber(-JITTER_RANGE, JITTER_RANGE), [cite: 141]
+                [cite_start]random:NextNumber(-JITTER_RANGE, JITTER_RANGE) [cite: 141]
+            )
+
+            [cite_start]hrp.CFrame = CFrame.new(newPos) * (hrp.CFrame - hrp.Position) [cite: 141]
+            
+            [cite_start]local waitTime = random:NextNumber(0.005, 0.015) [cite: 141]
+            [cite_start]task.wait(waitTime) [cite: 142]
+        end
+        return true
+    end
+
+    [cite_start]local function findDeliverySpot() [cite: 142]
+        [cite_start]for _, v in ipairs(workspace.Plots:GetDescendants()) do [cite: 142]
+            [cite_start]if v.Name == "DeliveryHitbox" and v.Parent:FindFirstChild("PlotSign") then [cite: 142]
+                [cite_start]if v.Parent.PlotSign:FindFirstChild("YourBase") and v.Parent.PlotSign.YourBase.Enabled then [cite: 142]
+                    [cite_start]return v [cite: 143]
+                end
+            end
+        end
+        [cite_start]DebugInfo("warn", "No valid DeliveryHitbox found for TweenSteal", nil) [cite: 143]
+        return nil
+    end
+
+    [cite_start]local delivery = findDeliverySpot() [cite: 143]
+    [cite_start]if not delivery then [cite: 143]
+        [cite_start]statusLabel.Text = "Error: DeliveryHitbox not found" [cite: 143]
+        [cite_start]statusLabel.TextColor3 = Color3.fromRGB(255, 80, 80) [cite: 144]
+        [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 0}):Play() [cite: 144]
+        [cite_start]task.wait(2) [cite: 144]
+        [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 1}):Play() [cite: 144]
+        return
+    end
+
+    [cite_start]DebugInfo("print", "DeliveryHitbox found for TweenSteal", delivery) [cite: 144]
+
+    [cite_start]local targetPos = delivery.CFrame * CFrame.new(0, random:NextInteger(-3, -1), 0) -- Menor rango [cite: 144]
+    
+    [cite_start]for _ = 1, 3 do [cite: 145]
+        [cite_start]task.spawn(function() [cite: 145]
+            [cite_start]local success = executeStealthMovement(targetPos, TELEPORT_ITERATIONS) [cite: 145]
+            [cite_start]if success then [cite: 145]
+                [cite_start]for _ = 1, 3 do [cite: 145]
+                    [cite_start]hrp.CFrame = VOID_CFRAME [cite: 145]
+                    [cite_start]task.wait(random:NextNumber(0.05, 0.1)) [cite: 145]
+                    [cite_start]hrp.CFrame = targetPos [cite: 146]
+                    [cite_start]task.wait(random:NextNumber(0.05, 0.1)) [cite: 146]
+                end
+            end
+            [cite_start]task.wait(random:NextNumber(0.1, 0.3)) [cite: 146]
+        end)
+    end
+
+    [cite_start]task.wait(1) [cite: 146]
+    [cite_start]local distance = (hrp.Position - targetPos.Position).Magnitude [cite: 147]
+    [cite_start]if distance <= 30 then [cite: 147]
+        [cite_start]DebugInfo("print", "TweenSteal succeeded", distance) [cite: 147]
+        [cite_start]statusLabel.Text = "TweenSteal Succeeded!" [cite: 147]
+        [cite_start]statusLabel.TextColor3 = Color3.fromRGB(0, 255, 100) [cite: 147]
+    else
+        [cite_start]DebugInfo("warn", "TweenSteal failed", distance) [cite: 147]
+        [cite_start]statusLabel.Text = "TweenSteal Failed: Too far (" .. math.floor(distance) .. ")" [cite: 147]
+        [cite_start]statusLabel.TextColor3 = Color3.fromRGB(255, 80, 80) [cite: 147]
+    end
+    [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 0}):Play() [cite: 148]
+    [cite_start]task.wait(2) [cite: 148]
+    [cite_start]TweenService:Create(statusLabel, TweenInfo.new(0.3), {TextTransparency = 1}):Play() [cite: 148]
+end
+
+-- NUEVA INTERFAZ MUCHO MÁS LINDA
+[cite_start]local ModernGui = Instance.new("ScreenGui") [cite: 148]
+[cite_start]ModernGui.Name = "NovaStealerModernGui" [cite: 148]
+[cite_start]ModernGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling [cite: 148]
+[cite_start]ModernGui.IgnoreGuiInset = true [cite: 148]
+[cite_start]ModernGui.DisplayOrder = 999 [cite: 148]
+[cite_start]ModernGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui") [cite: 148]
+
+[cite_start]local ModernBlur = Instance.new("BlurEffect") [cite: 148]
+[cite_start]ModernBlur.Name = "NovaStealerModernBlur" [cite: 148]
+[cite_start]ModernBlur.Size = 0 [cite: 148]
+[cite_start]ModernBlur.Parent = workspace [cite: 148]
+
+-- Elimino la creación de GradientBG y grad
+
+[cite_start]local MainPanel = Instance.new("Frame") [cite: 148]
+[cite_start]MainPanel.Parent = ModernGui [cite: 148]
+[cite_start]MainPanel.BackgroundColor3 = Color3.fromRGB(15, 15, 15) -- Fondo sólido oscuro [cite: 148]
+[cite_start]MainPanel.BackgroundTransparency = 0 -- Sin transparencia [cite: 148]
+[cite_start]MainPanel.BorderSizePixel = 0 [cite: 148]
+[cite_start]MainPanel.AnchorPoint = Vector2.new(0.5, 0.5) [cite: 148]
+[cite_start]MainPanel.Position = UDim2.new(0.5, 0, 0.5, 0) [cite: 148]
+-- MODIFICACION: Ajustar el tamaño del panel principal para móvil
+[cite_start]MainPanel.Size = UDim2.new(0, 300, 0, 250) -- Tamaño más pequeño para móvil [cite: 148]
+[cite_start]MainPanel.ClipsDescendants = true [cite: 148]
+[cite_start]MainPanel.ZIndex = 2 [cite: 148]
+
+[cite_start]local MainCorner = Instance.new("UICorner") [cite: 149]
+[cite_start]MainCorner.CornerRadius = UDim.new(0, 32) [cite: 149]
+[cite_start]MainCorner.Parent = MainPanel [cite: 149]
+
+[cite_start]local MainStroke = Instance.new("UIStroke") [cite: 149]
+[cite_start]MainStroke.Thickness = 3 [cite: 149]
+[cite_start]MainStroke.Color = Color3.fromRGB(150, 0, 0) -- Red border [cite: 149]
+[cite_start]MainStroke.Transparency = 0.2 [cite: 149]
+[cite_start]MainStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border [cite: 149]
+[cite_start]MainStroke.Parent = MainPanel [cite: 149]
+
+[cite_start]local Glow = Instance.new("ImageLabel") [cite: 149]
+[cite_start]Glow.Parent = MainPanel [cite: 149]
+[cite_start]Glow.BackgroundTransparency = 1 [cite: 149]
+[cite_start]Glow.AnchorPoint = Vector2.new(0.5,0.5) [cite: 149]
+[cite_start]Glow.Position = UDim2.new(0.5,0,0.5,0) [cite: 149]
+[cite_start]Glow.Size = UDim2.new(1,60,1,60) [cite: 149]
+[cite_start]Glow.Image = "rbxassetid://6015897843" [cite: 149]
+[cite_start]Glow.ImageTransparency = 1 -- CAMBIO: Hacer el brillo completamente transparente si no se desea. [cite: 149]
+[cite_start]Glow.ZIndex = 1 [cite: 150]
+
+[cite_start]local TopBar = Instance.new("Frame") [cite: 150]
+[cite_start]TopBar.Name = "TopBar" [cite: 150]
+[cite_start]TopBar.Parent = MainPanel [cite: 150]
+[cite_start]TopBar.BackgroundColor3 = Color3.fromRGB(150, 0, 0) -- Red TopBar [cite: 150]
+[cite_start]TopBar.BackgroundTransparency = 0 -- CAMBIO: Hacer la barra superior completamente opaca [cite: 150]
+[cite_start]TopBar.BorderSizePixel = 0 [cite: 150]
+-- MODIFICACION: Ajustar la altura del TopBar
+[cite_start]TopBar.Size = UDim2.new(1, 0, 0, 40) -- Altura reducida [cite: 150]
+[cite_start]TopBar.ZIndex = 3 [cite: 150]
+[cite_start]local TopBarCorner = Instance.new("UICorner") [cite: 150]
+[cite_start]TopBarCorner.CornerRadius = UDim.new(0, 32) [cite: 150]
+[cite_start]TopBarCorner.Parent = TopBar [cite: 150]
+
+[cite_start]local Title = Instance.new("TextLabel") [cite: 150]
+[cite_start]Title.Name = "Title" [cite: 150]
+[cite_start]Title.Parent = TopBar [cite: 150]
+[cite_start]Title.BackgroundTransparency = 1 [cite: 150]
+-- MODIFICACION: Ajustar el tamaño del título y la posición
+[cite_start]Title.Size = UDim2.new(1, -80, 1, 0) -- Menos ancho para botones de control [cite: 150]
+[cite_start]Title.Position = UDim2.new(0, 20, 0, 0) -- Menor indentación [cite: 150]
+[cite_start]Title.Font = Enum.Font.GothamBlack [cite: 150]
+[cite_start]Title.Text = "Nova Stealer - Mobile" -- Texto más corto para móvil [cite: 151]
+[cite_start]Title.TextColor3 = Color3.fromRGB(255, 255, 255) -- White text on red TopBar [cite: 151]
+[cite_start]Title.TextSize = 20 -- Tamaño de fuente más pequeño [cite: 151]
+[cite_start]Title.TextXAlignment = Enum.TextXAlignment.Left [cite: 151]
+[cite_start]Title.TextTransparency = 0.05 [cite: 151]
+[cite_start]Title.ZIndex = 4 [cite: 151]
+
+[cite_start]local ButtonBar = Instance.new("Frame") [cite: 151]
+[cite_start]ButtonBar.Parent = TopBar [cite: 151]
+[cite_start]ButtonBar.BackgroundTransparency = 1 [cite: 151]
+-- MODIFICACION: Ajustar el tamaño de la barra de botones
+[cite_start]ButtonBar.Size = UDim2.new(0, 80, 1, 0) -- Menos ancho [cite: 151]
+[cite_start]ButtonBar.Position = UDim2.new(1, -80, 0, 0) -- Posición ajustada [cite: 151]
+[cite_start]ButtonBar.ZIndex = 4 [cite: 151]
+
+[cite_start]local MinBtn = Instance.new("TextButton") [cite: 151]
+[cite_start]MinBtn.Name = "MinBtn" [cite: 152]
+[cite_start]MinBtn.Parent = ButtonBar [cite: 152]
+[cite_start]MinBtn.AnchorPoint = Vector2.new(0.5, 0.5) [cite: 152]
+[cite_start]MinBtn.BackgroundTransparency = 1 [cite: 152]
+[cite_start]MinBtn.Position = UDim2.new(0.5, -18, 0.5, 0) -- Posición ajustada [cite: 152]
+-- MODIFICACION: Ajustar el tamaño de los botones de control
+[cite_start]MinBtn.Size = UDim2.new(0, 24, 0, 24) -- Tamaño más pequeño [cite: 152]
+[cite_start]MinBtn.Font = Enum.Font.GothamBold [cite: 152]
+[cite_start]MinBtn.Text = "_" [cite: 152]
+[cite_start]MinBtn.TextColor3 = Color3.fromRGB(255, 50, 50) -- Red text for minimize [cite: 152]
+[cite_start]MinBtn.TextSize = 20 -- Tamaño de fuente más pequeño [cite: 152]
+[cite_start]MinBtn.ZIndex = 4 [cite: 152]
+[cite_start]MinBtn.AutoButtonColor = false [cite: 152]
+
+[cite_start]local CloseBtn = Instance.new("TextButton") [cite: 152]
+[cite_start]CloseBtn.Name = "CloseBtn" [cite: 152]
+[cite_start]CloseBtn.Parent = ButtonBar [cite: 152]
+[cite_start]CloseBtn.AnchorPoint = Vector2.new(0.5, 0.5) [cite: 152]
+[cite_start]CloseBtn.BackgroundTransparency = 1 [cite: 152]
+[cite_start]CloseBtn.Position = UDim2.new(0.5, 18, 0.5, 0) -- Posición ajustada [cite: 152]
+-- MODIFICACION: Ajustar el tamaño de los botones de control
+[cite_start]CloseBtn.Size = UDim2.new(0, 24, 0, 24) -- Tamaño más pequeño [cite: 152]
+[cite_start]CloseBtn.Font = Enum.Font.GothamBold [cite: 152]
+[cite_start]CloseBtn.Text = "×" [cite: 152]
+[cite_start]CloseBtn.TextColor3 = Color3.fromRGB(255, 50, 50) -- Red text for close [cite: 152]
+[cite_start]CloseBtn.TextSize = 20 -- Tamaño de fuente más pequeño [cite: 152]
+[cite_start]CloseBtn.ZIndex = 4 [cite: 152]
+[cite_start]CloseBtn.AutoButtonColor = false [cite: 152]
+
+[cite_start]local ContentPanel = Instance.new("Frame") [cite: 152]
+[cite_start]ContentPanel.Name = "ContentPanel" [cite: 153]
+[cite_start]ContentPanel.Parent = MainPanel [cite: 153]
+[cite_start]ContentPanel.BackgroundTransparency = 0 [cite: 153]
+[cite_start]ContentPanel.BackgroundColor3 = Color3.fromRGB(18, 18, 18) -- Fondo oscuro alrededor de los botones [cite: 153]
+-- MODIFICACION: Ajustar la posición y tamaño del ContentPanel
+[cite_start]ContentPanel.Position = UDim2.new(0, 0, 0, 40) -- Ajustar a la altura del TopBar [cite: 153]
+[cite_start]ContentPanel.Size = UDim2.new(1, 0, 1, -60) -- Ajustar al tamaño del MainPanel y TopBar [cite: 153]
+[cite_start]ContentPanel.ZIndex = 3 [cite: 153]
+
+-- Cambiar el título
+[cite_start]Title.Text = "Nova Stealer - Mobile UI" -- Título adaptado para móvil [cite: 153]
+
+-- Cambiar el layout de los botones a vertical
+[cite_start]local List = Instance.new("UIListLayout") [cite: 153]
+[cite_start]List.Parent = ContentPanel [cite: 153]
+[cite_start]List.FillDirection = Enum.FillDirection.Vertical [cite: 153]
+[cite_start]List.HorizontalAlignment = Enum.HorizontalAlignment.Center [cite: 154]
+[cite_start]List.VerticalAlignment = Enum.VerticalAlignment.Top [cite: 154]
+-- MODIFICACION: Reducir el padding
+[cite_start]List.Padding = UDim.new(0, 12) -- Padding más pequeño [cite: 154]
+
+-- Eliminar el UIGridLayout si existe
+[cite_start]for _, child in ipairs(ContentPanel:GetChildren()) do [cite: 154]
+    [cite_start]if child:IsA("UIGridLayout") then [cite: 154]
+        [cite_start]child:Destroy() [cite: 154]
+    end
+end
+
+[cite_start]local StatusLabel = Instance.new("TextLabel") [cite: 154]
+[cite_start]StatusLabel.Name = "StatusLabel" [cite: 154]
+[cite_start]StatusLabel.Parent = MainPanel [cite: 154]
+[cite_start]StatusLabel.BackgroundTransparency = 1 [cite: 154]
+-- MODIFICACION: Ajustar el tamaño y posición del StatusLabel
+[cite_start]StatusLabel.Size = UDim2.new(1, -40, 0, 30) -- Más pequeño [cite: 154]
+[cite_start]StatusLabel.Position = UDim2.new(0, 20, 1, -40) -- Posición ajustada [cite: 154]
+[cite_start]StatusLabel.Font = Enum.Font.GothamMedium [cite: 154]
+[cite_start]StatusLabel.TextColor3 = Color3.fromRGB(255, 50, 50) -- Red status text [cite: 154]
+[cite_start]StatusLabel.TextSize = 14 -- Tamaño de fuente más pequeño [cite: 155]
+[cite_start]StatusLabel.TextTransparency = 0.1 [cite: 155]
+[cite_start]StatusLabel.Text = "" [cite: 155]
+[cite_start]StatusLabel.TextWrapped = true [cite: 155]
+[cite_start]StatusLabel.ZIndex = 5 [cite: 155]
+
+[cite_start]local function createModernButton(name, text, color, callback) [cite: 155]
+    [cite_start]local btn = Instance.new("TextButton") [cite: 155]
+    [cite_start]btn.Name = name [cite: 155]
+    -- MODIFICACION: Ajustar el tamaño de los botones individuales
+    [cite_start]btn.Size = UDim2.new(0, 200, 0, 50) -- Botones más pequeños [cite: 155]
+    [cite_start]btn.BackgroundColor3 = Color3.fromRGB(12,12,12) -- Botón aún más oscuro [cite: 155]
+    [cite_start]btn.BackgroundTransparency = 0.05 -- Slightly transparent [cite: 155]
+    [cite_start]btn.Font = Enum.Font.GothamBold [cite: 155]
+    [cite_start]btn.Text = text [cite: 155]
+    [cite_start]btn.TextColor3 = Color3.fromRGB(255, 50, 50) -- Red text [cite: 155]
+    [cite_start]btn.TextSize = 16 -- Tamaño de fuente más pequeño [cite: 155]
+    [cite_start]btn.TextWrapped = true [cite: 155]
+    [cite_start]btn.AutoButtonColor = false -- Disable default Roblox button color change [cite: 155]
+    [cite_start]btn.ZIndex = 4 [cite: 155]
+    [cite_start]local corner = Instance.new("UICorner") [cite: 156]
+    [cite_start]corner.CornerRadius = UDim.new(0, 18) [cite: 156]
+    [cite_start]corner.Parent = btn [cite: 156]
+    [cite_start]local stroke = Instance.new("UIStroke") [cite: 156]
+    [cite_start]stroke.Thickness = 1 -- Very thin border [cite: 156]
+    [cite_start]stroke.Color = Color3.fromRGB(255, 50, 50) -- Red border [cite: 156]
+    [cite_start]stroke.Transparency = 0.5 -- Slightly transparent border [cite: 156]
+    [cite_start]stroke.Parent = btn [cite: 156]
+    [cite_start]btn.MouseEnter:Connect(function() [cite: 156]
+        [cite_start]TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundTransparency = 0.25, TextColor3 = Color3.fromRGB(255, 80, 80)}):Play() [cite: 156]
+        [cite_start]TweenService:Create(stroke, TweenInfo.new(0.2), {Transparency = 0.2}):Play() [cite: 156]
+    end)
+    [cite_start]btn.MouseLeave:Connect(function() [cite: 157]
+        [cite_start]TweenService:Create(btn, TweenInfo.new(0.2), {BackgroundTransparency = 0.05, TextColor3 = Color3.fromRGB(255, 50, 50)}):Play() [cite: 157]
+        [cite_start]TweenService:Create(stroke, TweenInfo.new(0.2), {Transparency = 0.5}):Play() [cite: 157]
+    end)
+    [cite_start]btn.MouseButton1Click:Connect(callback) [cite: 157]
+    return btn
+end
+
+-- Eliminar todos los botones antiguos antes de crear los nuevos
+[cite_start]for _, child in ipairs(ContentPanel:GetChildren()) do [cite: 157]
+    [cite_start]if child:IsA("TextButton") then [cite: 157]
+        [cite_start]child:Destroy() [cite: 157]
+    end
+end
+
+-- Crear los botones en el orden correcto, más anchos y color rojo
+[cite_start]local redColor = Color3.fromRGB(255, 50, 50) [cite: 157]
+
+[cite_start]local InstantStealBtn = createModernButton( [cite: 158]
+    [cite_start]"InstantStealBtn", [cite: 158]
+    [cite_start]"Instant Steal", redColor, [cite: 158]
+    function()
+        [cite_start]DebugInfo("print", "Delivery button clicked", "") [cite: 158]
+        [cite_start]DeliverBrainrot(StatusLabel) [cite: 158]
+    end
+)
+-- MODIFICACION: Ajustar el tamaño del botón para móvil
+[cite_start]InstantStealBtn.Size = UDim2.new(0, 250, 0, 50) [cite: 158]
+[cite_start]InstantStealBtn.Parent = ContentPanel [cite: 158]
+
+[cite_start]local BaseBtn = createModernButton( [cite: 158]
+    [cite_start]"BaseBtn", "Teleport Base", redColor, [cite: 158]
+    function()
+        [cite_start]DebugInfo("print", "Base button clicked", "") [cite: 158]
+        [cite_start]TPNearestBase(StatusLabel) [cite: 159]
+    end
+)
+-- MODIFICACION: Ajustar el tamaño del botón para móvil
+[cite_start]BaseBtn.Size = UDim2.new(0, 250, 0, 50) [cite: 159]
+[cite_start]BaseBtn.Parent = ContentPanel [cite: 159]
+
+[cite_start]local NoClipBtn = createModernButton( [cite: 159]
+    [cite_start]"NoClipBtn", "NoClip Teleport", redColor, [cite: 159]
+    function()
+        [cite_start]DebugInfo("print", "TweenSteal button clicked", "") [cite: 159]
+        [cite_start]TweenSteal(StatusLabel) [cite: 159]
+    end
+)
+-- MODIFICACION: Ajustar el tamaño del botón para móvil
+[cite_start]NoClipBtn.Size = UDim2.new(0, 250, 0, 50) [cite: 160]
+[cite_start]NoClipBtn.Parent = ContentPanel [cite: 160]
+
+-- Animaciones de entrada
+[cite_start]MainPanel.Size = UDim2.new(0, 0, 0, 0) [cite: 160]
+[cite_start]MainPanel.BackgroundTransparency = 1 [cite: 160]
+[cite_start]ModernBlur.Size = 0 [cite: 160]
+[cite_start]TweenService:Create(ModernBlur, TweenInfo.new(0.8, Enum.EasingStyle.Quint), {Size = 22}):Play() [cite: 160]
+TweenService:Create(MainPanel, TweenInfo.new(0.8, Enum.EasingStyle.Exponential, Enum.EasingDirection.Out), { -- More dramatic entry
+    -- MODIFICACION: Ajustar el tamaño final de entrada
+    [cite_start]Size = UDim2.new(0, 300, 0, 250), -- Tamaño final ajustado para móvil [cite: 160]
+    [cite_start]BackgroundTransparency = 0 -- CAMBIO: Asegurar que la transparencia final es 0 [cite: 160]
+}):Play()
+
+-- Minimizar y cerrar
+[cite_start]local isMinimized = false [cite: 160]
+-- MODIFICACION: Ajustar tamaños minimizados y originales
+[cite_start]local originalSize = UDim2.new(0, 300, 0, 250) -- Tamaño original ajustado [cite: 161]
+[cite_start]local minimizedSize = UDim2.new(0, 150, 0, 40) -- Tamaño minimizado ajustado (ancho y alto del TopBar) [cite: 161]
+[cite_start]MinBtn.MouseButton1Click:Connect(function() [cite: 161]
+    [cite_start]isMinimized = not isMinimized [cite: 161]
+    [cite_start]local targetSize = isMinimized and minimizedSize or originalSize [cite: 161]
+    [cite_start]TweenService:Create(MainPanel, TweenInfo.new(0.5, Enum.EasingStyle.Quint), { [cite: 161]
+        [cite_start]Size = targetSize [cite: 161]
+    }):Play()
+    [cite_start]ContentPanel.Visible = not isMinimized [cite: 161]
+    [cite_start]StatusLabel.Visible = not isMinimized [cite: 161]
+end)
+[cite_start]CloseBtn.MouseButton1Click:Connect(function() [cite: 161]
+    [cite_start]TweenService:Create(MainPanel, TweenInfo.new(0.5, Enum.EasingStyle.Quint), { [cite: 161]
+        [cite_start]Size = UDim2.new(0, 0, 0, 0), [cite: 161]
+        [cite_start]BackgroundTransparency = 1 [cite: 162]
+    }):Play()
+    [cite_start]TweenService:Create(ModernBlur, TweenInfo.new(0.5), {Size = 0}):Play() [cite: 162]
+    [cite_start]task.wait(0.5) [cite: 162]
+    [cite_start]ModernGui:Destroy() [cite: 162]
+    [cite_start]ModernBlur:Destroy() [cite: 162]
+end)
+
+-- Mostrar/Ocultar con Ctrl (Mantener para teclado virtual en móvil o quitar si no es necesario)
+[cite_start]local isGuiVisible = true [cite: 162]
+[cite_start]UserInputService.InputBegan:Connect(function(input, gameProcessedEvent) [cite: 162]
+    [cite_start]if gameProcessedEvent then return end [cite: 162]
+    [cite_start]if input.KeyCode == Enum.KeyCode.LeftControl then -- Puedes considerar cambiar esta tecla para móvil o eliminarla si no es práctica. [cite: 162, 163]
+        [cite_start]isGuiVisible = not isGuiVisible [cite: 163]
+        [cite_start]if isGuiVisible then [cite: 163]
+            [cite_start]TweenService:Create(MainPanel, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), { [cite: 163]
+                [cite_start]Size = isMinimized and minimizedSize or originalSize, [cite: 163]
+                [cite_start]BackgroundTransparency = 0 -- CAMBIO: Asegurar que la transparencia es 0 al mostrar [cite: 164]
+            }):Play()
+            [cite_start]TweenService:Create(ModernBlur, TweenInfo.new(0.5), {Size = 22}):Play() [cite: 164]
+            [cite_start]ContentPanel.Visible = not isMinimized [cite: 164]
+            [cite_start]StatusLabel.Visible = not isMinimized [cite: 164]
+        else
+            [cite_start]TweenService:Create(MainPanel, TweenInfo.new(0.5, Enum.EasingStyle.Quint), { [cite: 164]
+                [cite_start]Size = UDim2.new(0, 0, 0, 0), [cite: 165]
+                [cite_start]BackgroundTransparency = 1 [cite: 165]
+            }):Play()
+            [cite_start]TweenService:Create(ModernBlur, TweenInfo.new(0.5), {Size = 0}):Play() [cite: 165]
+        end
+    end
+end)
+
+-- Drag & Drop (MODIFICADO PARA MOVIL)
+[cite_start]local dragging = false [cite: 165]
+[cite_start]local dragInput, dragStart, startPos [cite: 165]
+[cite_start]TopBar.InputBegan:Connect(function(input) [cite: 165]
+    -- MODIFICACION: Añadir soporte para Touch
+    [cite_start]if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then [cite: 166]
+        [cite_start]dragging = true [cite: 166]
+        [cite_start]dragStart = input.Position [cite: 166]
+        [cite_start]startPos = MainPanel.Position [cite: 166]
+        [cite_start]input.Changed:Connect(function() [cite: 166]
+            [cite_start]if input.UserInputState == Enum.UserInputState.End then [cite: 166]
+                [cite_start]dragging = false [cite: 166]
+            end
+        end)
+    end
+end)
+[cite_start]TopBar.InputChanged:Connect(function(input) [cite: 166]
+    -- MODIFICACION: Añadir soporte para TouchMoved
+    [cite_start]if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then [cite: 167]
+        [cite_start]dragInput = input [cite: 167]
+    end
+end)
+[cite_start]UserInputService.InputChanged:Connect(function(input) [cite: 167]
+    [cite_start]if input == dragInput and dragging then [cite: 167]
+        [cite_start]local delta = input.Position - dragStart [cite: 167]
+        [cite_start]local goal = UDim2.new( [cite: 167]
+            [cite_start]startPos.X.Scale, [cite: 168]
+            [cite_start]startPos.X.Offset + delta.X, [cite: 168]
+            [cite_start]startPos.Y.Scale, [cite: 168]
+            [cite_start]startPos.Y.Offset + delta.Y [cite: 168]
+        )
+        [cite_start]MainPanel:TweenPosition(goal, Enum.EasingDirection.Out, Enum.EasingStyle.Sine, 0.05, true) [cite: 168]
+    end
+end)
+
+[cite_start]DebugInfo("print", "NovaStealerModernGui initialization completed", "") [cite: 168]
+-- FIN NUEVA INTERFAZ
